@@ -1,0 +1,198 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Play" />
+    <title>ラムオセロ！オセロゲームの決定版！初心者から高段者まで老若男女のオセロ好き集まれ！</title>
+    <link href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <link rel='stylesheet' href='/stylesheets/home.css'/>
+    <link rel='stylesheet' href='/stylesheets/style.css'/>
+    <link rel="stylesheet" href="stylesheets/button.scss">
+    <script src="socket.io/socket.io.js"></script>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+</head>
+
+<body class="body" id="body">
+    <div class="main" id="main">
+        <div class="logo">
+            <h1>Ram将棋</h1>
+        </div>
+        <input type="text" id="userName" name="userName" size="15">
+        <div class="buttons">
+            <div class="wrap" id="start">
+                <button class="button n" style="margin: 6%;"><i class="fas fa-chess-board fa-spin" style="margin: 5%;"></i>対局開始</button>
+            </div>
+            <div class="wrap">
+                <button class="button n1" style="margin: 6%;"><i class="fas fa-eye" style="margin: 3%;"></i>観戦</button>
+            </div>
+            <div class="wrap">
+                <button class="button n2" style="margin: 6%;"><i class="fas fa-user" style="margin: 3%;"></i>マイページ</button>
+            </div>
+        </div>
+        <div class="wrapper">
+            <div class="icon home">
+                <div class="tooltip">home</div>
+                <span><i class="fas fa-home"></i></span>
+            </div>
+            <div class="icon instagram">
+              <div class="tooltip">観戦</div>
+              <span><i class="fas fa-eye"></i></span>
+            </div>
+            <div class="icon twitter">
+              <div class="tooltip">Twitter</div>
+              <span><i class="fab fa-twitter"></i></span>
+            </div>
+            <div class="icon youtube">
+              <div class="tooltip">設定</div>
+              <span><i class="fas fa-cog"></i></span>
+            </div>
+          </div>
+          <p style="color: white;">入場者集: <span id="pc">0</span>人</p>
+    </div>
+    <div id="wait" class="wait" style="display: none;">
+        <div class="main">
+            <div class="load">
+                <h1 class="number">マッチング中</h1>
+                <i class="fas fa-spinner fa-spin fa-5x" style="color: white;"></i>
+                <h2 class="number" id="userCount"></h2>
+                <div class="wrapper">
+                    <div class="icon back" id="back">
+                        <div class="tooltip">戻る</div>
+                        <span><i class="fas fa-long-arrow-alt-left"></i></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="border" id="border" style="display: none;">
+        <div class="content">
+            <div class="ban" id="1" onclick="yech(this.id)"></div>
+            <div class="ban" id="2" onclick="yech(this.id)"></div>
+            <div class="ban" id="3" onclick="yech(this.id)"></div>
+            <div class="ban" id="4" onclick="yech(this.id)"></div>
+            <div class="ban" id="5" onclick="yech(this.id)"></div>
+            <div class="ban" id="6" onclick="yech(this.id)"></div>
+            <div class="ban" id="7" onclick="yech(this.id)"></div>
+            <div class="ban" id="8" onclick="yech(this.id)"></div>
+        </div>
+        <div class="content">
+            <div class="ban" id="9" onclick="yech(this.id)"></div>
+            <div class="ban" id="10" onclick="yech(this.id)"></div>
+            <div class="ban" id="11" onclick="yech(this.id)"></div>
+            <div class="ban" id="12" onclick="yech(this.id)"></div>
+            <div class="ban" id="13" onclick="yech(this.id)"></div>
+            <div class="ban" id="14" onclick="yech(this.id)"></div>
+            <div class="ban" id="15" onclick="yech(this.id)"></div>
+            <div class="ban" id="16" onclick="yech(this.id)"></div>
+        </div>
+        <div class="content">
+            <div class="ban" id="17" onclick="yech(this.id)"></div>
+            <div class="ban" id="18" onclick="yech(this.id)"></div>
+            <div class="ban" id="19" onclick="yech(this.id)"></div>
+            <div class="ban" id="20" onclick="yech(this.id)"></div>
+            <div class="ban" id="21" onclick="yech(this.id)"></div>
+            <div class="ban" id="22" onclick="yech(this.id)"></div>
+            <div class="ban" id="23" onclick="yech(this.id)"></div>
+            <div class="ban" id="24" onclick="yech(this.id)"></div>
+        </div>
+        <div class="content">
+            <div class="ban" id="25" onclick="yech(this.id)"></div>
+            <div class="ban" id="26" onclick="yech(this.id)"></div>
+            <div class="ban" id="27" onclick="yech(this.id)"></div>
+            <div class="ban" id="28" onclick="yech(this.id)"></div>
+            <div class="ban" id="29" onclick="yech(this.id)"></div>
+            <div class="ban" id="30" onclick="yech(this.id)"></div>
+            <div class="ban" id="31" onclick="yech(this.id)"></div>
+            <div class="ban" id="32" onclick="yech(this.id)"></div>
+        </div>
+        <div class="content">
+            <div class="ban" id="33" onclick="yech(this.id)"></div>
+            <div class="ban" id="34" onclick="yech(this.id)"></div>
+            <div class="ban" id="35" onclick="yech(this.id)"></div>
+            <div class="ban" id="36" onclick="yech(this.id)"></div>
+            <div class="ban" id="37" onclick="yech(this.id)"></div>
+            <div class="ban" id="38" onclick="yech(this.id)"></div>
+            <div class="ban" id="39" onclick="yech(this.id)"></div>
+            <div class="ban" id="40" onclick="yech(this.id)"></div>
+        </div>
+        <div class="content">
+            <div class="ban" id="41" onclick="yech(this.id)"></div>
+            <div class="ban" id="42" onclick="yech(this.id)"></div>
+            <div class="ban" id="43" onclick="yech(this.id)"></div>
+            <div class="ban" id="44" onclick="yech(this.id)"></div>
+            <div class="ban" id="45" onclick="yech(this.id)"></div>
+            <div class="ban" id="46" onclick="yech(this.id)"></div>
+            <div class="ban" id="47" onclick="yech(this.id)"></div>
+            <div class="ban" id="48" onclick="yech(this.id)"></div>
+        </div>
+        <div class="content">
+            <div class="ban" id="49" onclick="yech(this.id)"></div>
+            <div class="ban" id="50" onclick="yech(this.id)"></div>
+            <div class="ban" id="51" onclick="yech(this.id)"></div>
+            <div class="ban" id="52" onclick="yech(this.id)"></div>
+            <div class="ban" id="53" onclick="yech(this.id)"></div>
+            <div class="ban" id="54" onclick="yech(this.id)"></div>
+            <div class="ban" id="55" onclick="yech(this.id)"></div>
+            <div class="ban" id="56" onclick="yech(this.id)"></div>
+        </div>
+        <div class="content">
+            <div class="ban" id="57" onclick="yech(this.id)"></div>
+            <div class="ban" id="58" onclick="yech(this.id)"></div>
+            <div class="ban" id="59" onclick="yech(this.id)"></div>
+            <div class="ban" id="60" onclick="yech(this.id)"></div>
+            <div class="ban" id="61" onclick="yech(this.id)"></div>
+            <div class="ban" id="62" onclick="yech(this.id)"></div>
+            <div class="ban" id="63" onclick="yech(this.id)"></div>
+            <div class="ban" id="64" onclick="yech(this.id)"></div>
+        </div>
+        <div class="btn">
+            <div class="btn-back">
+              <p>Are you sure you want to do that?</p>
+              <button class="yes">Yes</button>
+              <button class="no">No</button>
+            </div>
+            <div class="btn-front">Delete</div>
+        </div>
+    </div>
+</body>
+<script>const socket = io();</script>
+<script>
+    let aiteId = "";
+    let sente = true;    
+    document.getElementById("start").addEventListener("click", () => {
+        socket.emit("waiting", "")
+        document.getElementById("main").style.display = "none";
+        document.getElementById("wait").style.display = "block";
+    })
+    document.getElementById("back").addEventListener("click", () => {
+        socket.emit("noWaiting", "")
+        document.getElementById("main").style.display = "block";
+        document.getElementById("wait").style.display = "none";
+    })
+    socket.on("gameStart", (id) => {
+        document.getElementById("wait").style.display = "none";
+        document.getElementById("border").style.display = "block";
+        aiteId = id;
+    })
+    socket.on("gameStartS", (p) => {
+        if(p == "0") {
+            meColor = "b";
+            turn = true;
+        } else {
+            meColor = "w";
+            turn = false;
+        }
+    })
+
+</script>
+<script type="text/javascript" src="javascripts/game.js"></script>
+<script type="text/javascript" src="javascripts/button.js"></script>
+</html>
+
+
+
