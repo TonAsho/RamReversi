@@ -68,7 +68,7 @@ function turnKoma(ids) {
     //下
     turns.push(returnKoma(id+8, 64, 8 ,8 , id));
     //上
-    turns.push(mReturnKoma(id-8, 0, 8, 8, id));
+    turns.push(mReturnKoma(id-8, 1, 8, 8, id));
     //左右
     turns.push(returnKoma(id+1, idCheck(id)[0]*8, 1, 1, id));
     turns.push(mReturnKoma(id-1, (idCheck(id)[0] - 1) * 8 + 1, 1, 1, id));
