@@ -55,6 +55,9 @@ io.on("connection", (socket) => {
   socket.on("putKoma", (info) => {
     io.to(info.id).emit("komaPut", (info.place));
   })
+  socket.on("pass", (id) => {
+    io.to(id).emit("passed");
+  })
   socket.on("stopWaiting", () => {
     for (let f = 0; f < waiting.length; f++) {
       if(socket.id == waiting[f] ) {

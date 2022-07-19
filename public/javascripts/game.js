@@ -7,12 +7,16 @@ let turn = true;
 //自分の色
 let meColor = "b";
 //手数
-let count = 0;
+let count = 4;
 //さいごに置いた駒
 let lastPut = 0;
 //棋譜記録
 let kihu = [];
-//関数たち
+//打てる場所に記しつけたとこ
+let canPutPlaces = [];
+//中心の関数たち
+
+
 //マスをクリックしたとき
 function yech(id) {
     //手番かどうか
@@ -33,12 +37,14 @@ function yech(id) {
             count++;
             kihu.push(Number(id));
             turn = false;
+            putOkReturn();
             socket.emit("putKoma", {
                 id: aiteId,
                 place: id
             });
             if(count == 64) {
-                winner()
+                winner();
+                return;
             }
         } else {
             alert("置けないぜーーー")
@@ -50,10 +56,6 @@ function yech(id) {
 
 }
 
-let up = [1,2,3,4,5,6,7,8];
-let right = [8,16,24,32,40,48,56,64];
-let left = [1,9,17,25,33,41,49,57];
-let bottom = [57,58,59,60,61,62,63,64];
 //駒をひっくり返す
 function turnKoma(ids) {
     //下
@@ -94,6 +96,106 @@ function turnKoma(ids) {
     }
 
 }
+function turnCheck(ids) {
+        let id = Number(ids);
+        let turns = [];
+        turns.push(returnKoma(id+8, 64, 8 ,8 , id));
+        turns.push(mReturnKoma(id-8, 0, 8, 8, id));
+        turns.push(returnKoma(id+1, idCheck(id)[0]*8, 1, 1, id));
+        turns.push(mReturnKoma(id-1, (idCheck(id)[0] - 1) * 8 + 1, 1, 1, id));
+        turns.push(naname1(id-7,1,7,7,id,up,right));
+        turns.push(naname1(id-9,1,9,9,id,up,left));
+        turns.push(naname2(id+7,64,7,7,id,bottom,left));
+        turns.push(naname2(id+9,64,9,9,id,bottom,right));
+        let put = false;
+        for (let f = 0; f < 8; f++) {
+            if(turns[f].length != 0) {
+                put = true;
+            }
+        } 
+        if(put) {
+            return true;
+        } else {
+            return false;
+        }
+}
+//相手の打った場所を取得
+socket.on("komaPut", (place) => {
+    let p = place;
+    if(meColor == "b") {
+        piece[p - 1] = 2;
+        meColor = "w";
+    } else {
+        piece[p - 1] = 1;
+        meColor = "b";
+    }
+    count++;
+    turnKoma(p);
+    putKoma(p);
+    if(meColor == "b") {
+        meColor = "w";
+    } else {
+        meColor = "b";
+    }
+    kihu.push(p)
+    changeStyle(p);
+    lastPut = p;
+    if(count == 64) {
+        winner();
+        return;
+    }
+    let pp = looking();
+    canPutPlaces = pp;
+    if(canPutPlaces.length == 0){
+        alert("置ける場所がないようです！パスします。");
+        pass();
+        return;
+    } else {
+        putOk(pp);
+    }
+    // if(looking()) {
+    //     turn = true;
+    // } else {
+    //     if(count == 64) {
+    //         winner();
+    //         return;
+    //     } else {
+    //         alert("置ける場所がありません！相手の手番です！")
+    //         turn = false;
+    //     }
+    // }
+    turn = true;
+})
+//パスする
+function pass() {
+    socket.emit("pass", (aiteId));
+}
+//パスを受け取る
+socket.on("passed", () => {
+    alert("相手がパスしました。");
+    let pp = looking();
+    canPutPlaces = pp;
+    if(canPutPlaces.length = 0){
+        alert("試合終了！");
+        winner();
+    } else {
+        putOk(pp);
+        turn = true;
+    }
+})
+//置けるとこみる
+function looking() {
+    let canPut = [];
+    for (let f = 0; f < 64; f++) {
+        if(piece[f] == 0) {
+            if(turnCheck(f + 1)) {
+                canPut.push(f + 1);
+            }
+        }
+    }
+    return canPut;
+}
+//関数の中に出てくる関数たち
 //判定関数
 function returnKoma(a, b, c, d, id) {
     let turns = [];
@@ -157,6 +259,11 @@ function naname1(a, b, c, d, id,x,y) {
         }
         if(aiteKoma(f)) {
             turns.push(f);
+            for (let z = 0; z < 8; z++) {
+                if(x[z] == f || y[z] == f) {
+                    return [];
+                }
+            }
         } else if(isClear(f)) {
             turns.length = 0;
             break;
@@ -191,6 +298,11 @@ function naname2(a, b, c, d, id,x,y) {
         }
         if(aiteKoma(f)) {
             turns.push(f);
+            for (let z = 0; z < 8; z++) {
+                if(x[z] == f || y[z] == f) {
+                    return [];
+                }
+            }
         } else if(isClear(f)) {
             turns.length = 0;
             break;
@@ -211,7 +323,6 @@ function naname2(a, b, c, d, id,x,y) {
     }
     
 }
-
 //相手の駒かどうか
 function aiteKoma(id) {
     if(meColor == "b" && piece[id - 1] == 2) {
@@ -263,6 +374,7 @@ function winner() {
             alert("引き分け！")
         }
     }
+    reset();
     document.getElementById("main").style.display = "block";
     document.getElementById("border").style.display = "none";
 }
@@ -325,55 +437,6 @@ function changeStyle(id) {
         document.getElementById(id).style.backgroundColor = "green";
     }
 }
-
-//相手の打った場所を取得
-socket.on("komaPut", (place) => {
-    let p = place;
-    if(meColor == "b") {
-        piece[p - 1] = 2;
-        meColor = "w";
-    } else {
-        piece[p - 1] = 1;
-        meColor = "b";
-    }
-    count++;
-    turnKoma(p);
-    putKoma(p);
-    if(meColor == "b") {
-        meColor = "w";
-    } else {
-        meColor = "b";
-    }
-    kihu.push(p)
-    changeStyle(p);
-    lastPut = p;
-    // if(looking()) {
-    //     turn = true;
-    // } else {
-    //     if(count == 64) {
-    //         winner();
-    //         return;
-    //     } else {
-    //         alert("置ける場所がありません！相手の手番です！")
-    //         turn = false;
-    //     }
-    // }
-    turn = true;
-    if(count == 64) {
-        winner();
-    }
-})
-//置けるとこみる
-function looking() {
-    for (let f = 0; f < 64; f++) {
-        if(piece[f] == 0) {
-            if(turnKoma(f + 1)) {
-                return true;
-            }
-        }
-    }
-    return false;
-}
 //盤を絵画する
 function showBoard() {
     for (let f = 0; f < 64; f++) {
@@ -393,7 +456,41 @@ function showBoard() {
         
     }
 }
-window.onload = function() {
+let up = [1,2,3,4,5,6,7,8];
+let right = [8,16,24,32,40,48,56,64];
+let left = [1,9,17,25,33,41,49,57];
+let bottom = [57,58,59,60,61,62,63,64];
+//置ける場所の色を変える
+function putOk(oks) {
+    for (let f = 0; f < oks.length; f++) {
+        let number = Number(oks[f]);
+        let add = document.createElement("div");
+        add.className = "canPut";
+        document.getElementById(number).append(add);
+    }
+}
+function putOkReturn() {
+    if(canPutPlaces.length == 0) {
+        return;
+    }
+    let x = canPutPlaces;
+    for( let i = 0 ; i < x.length ; i ++ ) {
+        if(x[i] != lastPut) {
+            document.getElementById(x[i]).innerHTML = "";
+        }
+    }
+    canPutPlaces.length = 0;
+}
+//対局情報をリセット
+function reset() {
+    turn = true;
+    meColor = "b";
+    count = 4;
+    lastPut = 0;
+    kihu.length = 0;
+    canPutPlaces.length = 0;
+}
+function gameStart() {
     for (let f = 1; f <= 64; f++) {
         if(f == 28 || f == 37) {
             piece[f - 1] = 2;
@@ -404,4 +501,9 @@ window.onload = function() {
         }
     }
     showBoard();
+    if(turn) {
+        let p = looking();
+        canPutPlaces = p;
+        putOk(p);
+    }
 }

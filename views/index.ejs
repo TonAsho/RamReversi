@@ -154,7 +154,6 @@
 <script>const socket = io();</script>
 <script>
     let aiteId = "";
-    let sente = true;    
     document.getElementById("start").addEventListener("click", () => {
         socket.emit("waiting", "")
         document.getElementById("main").style.display = "none";
@@ -178,6 +177,7 @@
             meColor = "w";
             turn = false;
         }
+        gameStart();
     })
 
 </script>
