@@ -26,7 +26,7 @@
                 <button class="button n" style="margin: 6%;"><i class="fas fa-chess-board fa-spin" style="margin: 5%;"></i>対局開始</button>
             </div>
             <div class="wrap">
-                <button class="button n1" style="margin: 6%;"><i class="fas fa-eye" style="margin: 3%;"></i>観戦</button>
+                <button class="button n1" style="margin: 6%;" onclick="botGame()"><i class="fas fa-eye" style="margin: 3%;"></i>ボットと対戦する</button>
             </div>
             <div class="wrap">
                 <button class="button n2" style="margin: 6%;"><i class="fas fa-user" style="margin: 3%;"></i>マイページ</button>
@@ -154,6 +154,7 @@
 <script>const socket = io();</script>
 <script>
     let aiteId = "";
+    let bod = false;
     document.getElementById("start").addEventListener("click", () => {
         socket.emit("waiting", "")
         document.getElementById("main").style.display = "none";
@@ -169,6 +170,14 @@
         document.getElementById("border").style.display = "block";
         aiteId = id;
     })
+    function botGame() {
+        document.getElementById("main").style.display = "none";
+        document.getElementById("border").style.display = "block";
+        turn = true;
+        meColor = "b";
+        bod = true;
+        gameStart();
+    }
     socket.on("gameStartS", (p) => {
         if(p == "0") {
             meColor = "b";

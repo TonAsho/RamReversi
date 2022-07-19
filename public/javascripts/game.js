@@ -38,10 +38,14 @@ function yech(id) {
             kihu.push(Number(id));
             turn = false;
             putOkReturn();
-            socket.emit("putKoma", {
-                id: aiteId,
-                place: id
-            });
+            if(bod) {
+                bodPut();
+            } else {
+                socket.emit("putKoma", {
+                    id: aiteId,
+                    place: id
+                });
+            }
             if(count == 64) {
                 winner();
                 return;
@@ -153,19 +157,62 @@ socket.on("komaPut", (place) => {
     } else {
         putOk(pp);
     }
-    // if(looking()) {
-    //     turn = true;
-    // } else {
-    //     if(count == 64) {
-    //         winner();
-    //         return;
-    //     } else {
-    //         alert("置ける場所がありません！相手の手番です！")
-    //         turn = false;
-    //     }
-    // }
     turn = true;
 })
+//ぼっとよう
+function bodPut() {
+    let ppp = looking();
+    canPutPlaces = ppp;
+    if(canPutPlaces.length == 0){
+        alert("ボット：置ける場所がないようです！パスします。");
+        turn = true;
+        let p2 = looking();
+        canPutPlaces = p2;
+        if(canPutPlaces.length == 0){
+            alert("試合終了！");
+            winner();
+        } else {
+            putOk(p2);
+        }
+        return;
+    } 
+    let rnd = Math.floor(Math.random() * canPutPlaces.length);
+    let p = canPutPlaces[rnd];
+    if(meColor == "b") {
+        piece[p - 1] = 2;
+        meColor = "w";
+    } else {
+        piece[p - 1] = 1;
+        meColor = "b";
+    }
+    count++;
+    turnKoma(p);
+    putKoma(p);
+    if(meColor == "b") {
+        meColor = "w";
+    } else {
+        meColor = "b";
+    }
+    kihu.push(p)
+    changeStyle(p);
+    lastPut = p;
+    if(count == 64) {
+        winner();
+        return;
+    }
+    putOkReturn();
+
+    let pp = looking();
+    canPutPlaces = pp;
+    if(canPutPlaces.length == 0){
+        alert("置ける場所がないようです！パスします。");
+        bodPut();
+        return;
+    } else {
+        putOk(pp);
+    }
+    turn = true;
+}
 //パスする
 function pass() {
     socket.emit("pass", (aiteId));
