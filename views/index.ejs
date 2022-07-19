@@ -18,9 +18,9 @@
 <body class="body" id="body">
     <div class="main" id="main">
         <div class="logo">
-            <h1>Ram将棋</h1>
+            <h1>Ramオセロ</h1>
+            <p style="font-size: 15px;">ただいま使用できるサービスはオンライン対局のみとなっております。</p>
         </div>
-        <input type="text" id="userName" name="userName" size="15">
         <div class="buttons">
             <div class="wrap" id="start">
                 <button class="button n" style="margin: 6%;"><i class="fas fa-chess-board fa-spin" style="margin: 5%;"></i>対局開始</button>
@@ -179,7 +179,9 @@
         }
         gameStart();
     })
-
+    socket.on("peopleCount", (count) => {
+        document.getElementById("pc").innerHTML = count;
+    })
 </script>
 <script type="text/javascript" src="javascripts/game.js"></script>
 </html>

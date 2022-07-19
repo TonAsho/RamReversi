@@ -49,6 +49,7 @@ let peopleCount = 0;
 let waiting = [];
 io.on("connection", (socket) => {
   peopleCount++;
+  io.emit("peopleCount", (peopleCount));
   socket.on("waiting", () => {
     waiting.push(socket.id);
   })
@@ -68,6 +69,7 @@ io.on("connection", (socket) => {
   })
   socket.on("disconnect", () => {
     peopleCount--;
+    io.emit("peopleCount", (peopleCount));
   })
 })
 setInterval(() => {
