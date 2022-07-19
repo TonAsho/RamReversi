@@ -161,11 +161,13 @@ socket.on("komaPut", (place) => {
 })
 //ぼっとよう
 function bodPut() {
+    meColor = "w";
     let ppp = looking();
     canPutPlaces = ppp;
     if(canPutPlaces.length == 0){
         alert("ボット：置ける場所がないようです！パスします。");
         turn = true;
+        meColor = "b";
         let p2 = looking();
         canPutPlaces = p2;
         if(canPutPlaces.length == 0){
@@ -173,9 +175,11 @@ function bodPut() {
             winner();
         } else {
             putOk(p2);
+            return;
         }
         return;
     } 
+    meColor = "b"
     let rnd = Math.floor(Math.random() * canPutPlaces.length);
     let p = canPutPlaces[rnd];
     if(meColor == "b") {
@@ -201,7 +205,7 @@ function bodPut() {
         return;
     }
     putOkReturn();
-
+    //ボット駒打った。
     let pp = looking();
     canPutPlaces = pp;
     if(canPutPlaces.length == 0){
@@ -533,9 +537,22 @@ function reset() {
     turn = true;
     meColor = "b";
     count = 4;
-    lastPut = 0;
     kihu.length = 0;
     canPutPlaces.length = 0;
+    piece.length = 0;
+    for (let f = 1; f <= 64; f++) {
+        document.getElementById(f).innerHTML = "";
+        if(f == 28 || f == 37) {
+            piece[f - 1] = 2;
+        } else if(f == 29 || f == 36) {
+            piece[f - 1] = 1;
+        } else {
+            piece[f - 1] = 0;
+        }
+    }
+    document.getElementById(lastPut).style.backgroundColor = "lightgreen";
+    lastPut = 0;
+    showBoard();
 }
 function gameStart() {
     for (let f = 1; f <= 64; f++) {
