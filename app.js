@@ -13,9 +13,13 @@ var app = express();
 
 const server = http.createServer(app);
 const io = socketio(server);
+
+//databases;
+const pool = require('../db/pool');
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
+
 
 app.use(logger('dev'));
 app.use(express.json());
@@ -23,9 +27,11 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use((req, res, next) => {
+  next();
+})
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
-
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));
@@ -44,7 +50,10 @@ app.use(function(err, req, res, next) {
 
 module.exports = { app: app, server: server };
 
-
+////////////////
+////////////////
+/////////////////
+//ここから対局処理
 let peopleCount = 0;
 let waiting = [];
 io.on("connection", (socket) => {
