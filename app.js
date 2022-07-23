@@ -2,20 +2,23 @@ var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
+var session = require('express-session');
 var logger = require('morgan');
 var socketio = require('socket.io');
 var http = require('http');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
+var loginRouter = require('./routes/login');
+var createRouter = require('./routes/create');
+var logoutRouter = require('./routes/logout');
+var userPageRouter = require("./routes/userPage")
 
 var app = express();
 
 const server = http.createServer(app);
 const io = socketio(server);
 
-//databases;
-const pool = require('../db/pool');
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
@@ -25,13 +28,28 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+app.use(session({
+  secret: "secret-key",
+  resave: false,
+  saveUninitialized:false,
+}))
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use((req, res, next) => {
+  if(session.isLogined == undefined) {
+    console.log("A user haven't logined");
+    res.locals.isLogined = false;
+  } else {
+    console.log("loginged");
+    res.locals.isLogined = true;
+  }
   next();
 })
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+app.use('/login', loginRouter);
+app.use('/create', createRouter);
+app.use('/logout', logoutRouter);
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));
