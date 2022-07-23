@@ -29,7 +29,7 @@
                 <button class="button n1" style="margin: 6%;" onclick="botGame()"><i class="fas fa-eye" style="margin: 3%;"></i>ボットと対戦する</button>
             </div>
             <div class="wrap">
-                <button class="button n2" style="margin: 6%;"><i class="fas fa-user" style="margin: 3%;"></i>マイページ</button>
+                <button class="button n2" style="margin: 6%;" onclick="userPage()" ><i class="fas fa-user" style="margin: 3%;"></i>マイページ</button>
             </div>
         </div>
         <div class="wrapper">
@@ -199,6 +199,9 @@
     socket.on("peopleCount", (count) => {
         document.getElementById("pc").innerHTML = count;
     })
+    function userPage() {
+        window.location.href = "http://localhost:3000/userPage"
+    }
 </script>
 <script type="text/javascript" src="javascripts/game.js"></script>
 </html>

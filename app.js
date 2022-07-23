@@ -6,6 +6,8 @@ var session = require('express-session');
 var logger = require('morgan');
 var socketio = require('socket.io');
 var http = require('http');
+var helmet = require('helmet');
+var bcrypt = require("bcrypt");
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
@@ -28,6 +30,7 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+app.use(helmet.xssFilter())
 app.use(session({
   secret: "secret-key",
   resave: false,
@@ -50,6 +53,7 @@ app.use('/users', usersRouter);
 app.use('/login', loginRouter);
 app.use('/create', createRouter);
 app.use('/logout', logoutRouter);
+app.use('/userPage', userPageRouter)
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));
@@ -93,6 +97,9 @@ io.on("connection", (socket) => {
       }
     }
     console.log(waiting)
+  })
+  socket.on("kifu", (kifu) => {
+
   })
   socket.on("disconnect", () => {
     peopleCount--;

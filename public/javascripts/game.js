@@ -399,6 +399,8 @@ let piece = []
 
 //勝敗判定
 function winner() {
+    //棋譜送信
+    socket.emit("kifu", {kifu: kihu});
     let black = 0;
     let white = 0;
     for (let f = 0; f < 64; f++) {

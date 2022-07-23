@@ -1,6 +1,8 @@
 var express = require('express');
 const session = require('express-session');
 const pool = require('../db/pool');
+const bcrypt = require("bcrypt");
+
 var router = express.Router();
 
 router.get('/', (req, res) => {
@@ -17,7 +19,7 @@ router.post('/', (req, res) => {
     pool.query('SELECT * FROM users WHERE name=$1', [name])
     .then(result => {
         if(result.rows.length > 0) {
-            if(result.rows[0].password == password) {
+            if(bcrypt.compare(password, result.rows[0].password)) {
                 isOK = true;
             }
         }
@@ -26,6 +28,7 @@ router.post('/', (req, res) => {
     .then(() => {
         if(isOK) {
             session.isLogined = true;
+            session.userName = name;
             res.redirect("/");
         } else {
             res.redirect("/login")
